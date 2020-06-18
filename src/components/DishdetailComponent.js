@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle } from 'reactstrap';
+import { Card, CardImg, CardText, CardBody, CardTitle } from 'reactstrap';
 
 class DishDetail extends Component {
     constructor(props) {
@@ -20,14 +20,11 @@ class DishDetail extends Component {
     
     renderComments(comments) {
         let list_cmt=comments.map((cmt)=>{
-            let dte = new Date(cmt.date)
-            let Months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-            let ProperDate=Months[dte.getMonth()]+" "+dte.getDate()+", "+dte.getFullYear();
             return(
                 <li key={cmt.id}>
                     <div>{cmt.comment}</div>
                     <br></br>
-                    <div>-- {cmt.author} , {ProperDate}</div>
+                    <div>-- {cmt.author} , {new Intl.DateTimeFormat('en-US',{year: 'numeric',month:'short',day:'2-digit'}).format(new Date(Date.parse(cmt.date)))}</div>
                     <br></br>
                 </li>
             );
@@ -48,12 +45,14 @@ class DishDetail extends Component {
     render(){
         if (this.props.dish) {
             return (
-                <div className="row">
-                    <div className="col-12 col-md-5 m-1">
-                        {this.renderDish(this.props.dish)}
-                    </div>
-                    <div className="col-12 col-md-5 m-1">
-                        {this.renderComments(this.props.dish.comments)}
+                <div className="container">
+                    <div className="row">
+                        <div className="col-12 col-md-5 m-1">
+                            {this.renderDish(this.props.dish)}
+                        </div>
+                        <div className="col-12 col-md-5 m-1">
+                            {this.renderComments(this.props.dish.comments)}
+                        </div>
                     </div>
                 </div>
             )
