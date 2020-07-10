@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Button, Label,  Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, Form, Errors ,actions } from 'react-redux-form';
+import { baseUrl } from '../shared/baseUrl';
 
 
 const required = (val) => val && val.length;
@@ -20,9 +21,26 @@ class Contact extends Component {
 
 
     handleSubmit(values) {
-        console.log("Current State is :" + JSON.stringify(values));
-        alert("Current State is :"+ JSON.stringify(values));
+        this.props.postFeedback(values);
         this.props.resetFeedbackForm();
+        fetch(baseUrl+"feedback")
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error' + response.status + ': '+ response.statusText);
+                error.response=response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(feedbacks => alert(JSON.stringify(feedbacks[feedbacks.length-1])))
+        .catch(error => alert(error.message))
     }
 
 
